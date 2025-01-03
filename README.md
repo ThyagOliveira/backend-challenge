@@ -41,3 +41,6 @@ Instead of writing logic directly in views or serializers, create a service laye
 
 ### 3. **Serializer DTO**
 Use DRF serializers to facilitate data validation and transformation.
+
+### 4. **Serializer Composite**
+Combining serializers to reuse code and have more flexibility
