@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Book(models.Model):
@@ -32,3 +33,22 @@ class Book(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Reservation(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='reservations')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reservations')
+    reservation_date = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(
+        max_length=20,
+        choices=[("reserved", "Reserved"), ("canceled", "Canceled"), ("completed", "Completed")],
+        default="reserved"
+    )
+
+    class Meta:
+        verbose_name = "Reservation"
+        verbose_name_plural = "Reservations"
+        unique_together = ('book', 'status')
+
+    def __str__(self):
+        return f"Reservation for {self.book.title} by {self.user.username}"
