@@ -1,6 +1,7 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
-from .views import BookViewSet, BookUploadView
+from .views.books import BookViewSet
+from .views.authentication import LoginView
 
 
 router = DefaultRouter()
@@ -8,5 +9,5 @@ router.register(r'books', BookViewSet)
 
 urlpatterns = [
     path("", include(router.get_urls())),
-    path('upload/', BookUploadView.as_view(), name='upload-books'),
+    path("login/", LoginView.as_view(), name="basic-login"),
 ]
