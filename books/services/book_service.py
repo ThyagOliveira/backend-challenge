@@ -1,5 +1,7 @@
 import csv
-from ..models import Book
+from ..models import Book, Reservation
+from django.db import transaction
+from django.core.exceptions import ValidationError
 
 
 class BookService:
@@ -23,3 +25,19 @@ class BookService:
             errors.append(f"Error during bulk create: {e}")
 
         return len(books), errors
+    
+
+    @staticmethod
+    def reservation_book(user, book_id):
+        try:
+            with transaction.atomic():
+                book = Book.objects.select_for_update().get(id=book_id)
+
+                if Reservation.objects.filter(book=book, status="reserved").exists():
+                    raise ValidationError("Book reserved")
+
+                reservation = Reservation.objects.create(book=book, user=user)
+
+                return reservation
+        except Book.DoesNotExist:
+            raise ValidationError("Book Not Found.")
